@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ফুড অর্ডার - অ্যাডমিন</title>
+    <link href="https://unpkg.com/material-light@1.0.0/dist/material-light.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #4D44DB;
+            --accent-color: #8B85FF;
+            --background: #F8F9FF;
+            --card-bg: #FFFFFF;
+            --text-dark: #2E3A59;
+            --text-light: #FFFFFF;
+            --text-muted: #8F9BB3;
+            --danger-color: #FF5E7D;
+            --success-color: #4CD97B;
+            --warning-color: #FFB259;
+            --info-color: #4DB5FF;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Dark Mode Variables */
+        .dark-mode {
+            --primary-color: #7B6FFF;
+            --secondary-color: #5A4FCF;
+            --background: #1A1A2E;
+            --card-bg: #16213E;
+            --text-dark: #E6E6E6;
+            --text-muted: #B8B8B8;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Admin Login */
+        .admin-login {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: var(--box-shadow);
+            transform: translateY(0);
+            transition: var(--transition);
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Admin Dashboard */
+        #adminDashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .admin-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            padding: 0 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary-color);
+        }
+
+        .admin-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item button {
+            width: 100%;
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            border-radius: var(--border-radius);
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .menu-item button:hover, .menu-item button.active {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .menu-item i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .admin-content {
+            padding: 2rem;
+            background-color: var(--background);
+            transition: var(--transition);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .logout-btn, .theme-toggle {
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .logout-btn:hover, .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #FF7B9C 100%);
+            color: white;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            color: var(--text-dark);
+        }
+
+        /* Data Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .data-table th, .data-table td {
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(108, 99, 255, 0.05);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .status-pending {
+            background: var(--warning-color);
+            box-shadow: 0 0 10px rgba(255, 178, 89, 0.5);
+        }
+
+        .status-completed {
+            background: var(--success-color);
+            box-shadow: 0 0 10px rgba(76, 217, 123, 0.5);
+        }
+
+        .action-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .action-btn i {
+            font-size: 0.9rem;
+        }
+
+        .complete-btn {
+            background: linear-gradient(135deg, var(--success-color) 0%, #6AE395 100%);
+            color: white;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #A29BFF 100%);
+            color: white;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #FF8FA9 100%);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Add Food Form */
+        .add-food-form {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-width: 700px;
+            margin: 0 auto;
+            transition: var(--transition);
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text-dark);
+            transition: var(--transition);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+        }
+
+        /* Search Bar */
+        .admin-search {
+            display: flex;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .admin-search input {
+            flex: 1;
+            padding: 0.9rem 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 1rem;
+            outline: none;
+            background: var(--card-bg);
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        .admin-search input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .admin-search button {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 0 1.8rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .admin-search button:hover {
+            opacity: 0.9;
+        }
+
+        /* New Styles for Options and Modal */
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .option-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(108, 99, 255, 0.1);
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .option-input:hover {
+            background: rgba(108, 99, 255, 0.2);
+        }
+
+        .option-input input {
+            border: none;
+            background: transparent;
+            outline: none;
+            color: var(--text-dark);
+            min-width: 120px;
+        }
+
+        .remove-option {
+            color: var(--danger-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-option:hover {
+            transform: scale(1.2);
+        }
+
+        .add-option-btn {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .add-option-btn:hover {
+            background: rgba(108, 99, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Order Details Modal */
+        .order-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .order-details-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .order-details-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 700px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: var(--transition);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .order-details-modal.show .order-details-card {
+            transform: translateY(0);
+        }
+
+        .order-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .order-details-header h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .order-details-header button {
+            background: transparent;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .order-details-header button:hover {
+            color: var(--danger-color);
+            transform: rotate(90deg);
+        }
+
+        .order-details-body {
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            flex: 2;
+            text-align: right;
+        }
+
+        .close-details-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .close-details-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+        }
+
+        /* Food Grid in Search Section */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .food-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            transform: translateY(0);
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .food-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .food-card-content {
+            padding: 1.5rem;
+        }
+
+        .food-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .food-card p {
+            margin: 0.5rem 0;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .food-card small {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .food-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            #adminDashboard {
+                grid-template-columns: 240px 1fr;
+            }
+            
+            .admin-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #adminDashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 280px;
+                height: 100vh;
+                z-index: 100;
+                transition: var(--transition);
+            }
+            
+            .admin-sidebar.show {
+                left: 0;
+            }
+            
+            .admin-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            
+            .menu-toggle {
+                display: flex;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 90;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                cursor: pointer;
+                box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+                transition: var(--transition);
+            }
+            
+            .menu-toggle:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .food-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Login -->
+    <div class="admin-login" id="adminLogin">
+        <div class="login-card fade-in">
+            <div class="admin-logo">
+                <i class="fas fa-utensils"></i>
+                ফুডি অ্যাডমিন
+            </div>
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--text-dark);">অ্যাডমিন লগইন</h2>
+            <form onsubmit="adminLogin(event)">
+                <div class="form-group">
+                    <label for="adminEmail">ইমেইল</label>
+                    <input type="email" id="adminEmail" placeholder="admin@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">পাসওয়ার্ড</label>
+                    <input type="password" id="adminPassword" placeholder="********" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> লগইন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="hidden">
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <i class="fas fa-utensils"></i>
+                ফুডি অ্যাডমিন
+            </div>
+            <ul class="admin-menu">
+                <li class="menu-item">
+                    <button class="active" onclick="showAdminSection('users')">
+                        <i class="fas fa-users"></i> ব্যবহারকারী
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button onclick="showAdminSection('orders')">
+                        <i class="fas fa-receipt"></i> অর্ডার
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button onclick="showAdminSection('search')">
+                        <i class="fas fa-search"></i> অনুসন্ধান
+                    </button>
+                </li>
+                <li class="menu-item">
+                    <button onclick="showAdminSection('addFood')">
+                        <i class="fas fa-plus-circle"></i> খাবার যোগ করুন
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1 class="admin-title" id="adminSectionTitle">ব্যবহারকারী</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon" id="themeIcon"></i> থিম
+                    </button>
+                    <button class="logout-btn" onclick="adminLogout()">
+                        <i class="fas fa-sign-out-alt"></i> লগআউট
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="adminUsers" class="admin-section">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>নাম</th>
+                            <th>ইমেইল</th>
+                            <th>ফোন</th>
+                            <th>অর্ডার সংখ্যা</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersContainer"></tbody>
+                </table>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="adminOrders" class="admin-section hidden">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>অর্ডার আইডি</th>
+                            <th>ব্যবহারকারী</th>
+                            <th>খাবারের নাম</th>
+                            <th>মূল্য</th>
+                            <th>স্ট্যাটাস</th>
+                            <th>অ্যাকশন</th>
+                            <th>বিস্তারিত</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersContainer"></tbody>
+                </table>
+            </div>
+
+            <!-- Search Section -->
+            <div id="adminSearch" class="admin-section hidden">
+                <div class="admin-search">
+                    <input type="text" placeholder="খাবার অনুসন্ধান..." oninput="adminSearchFood(this.value)">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+                <div id="adminFoodList" class="food-grid"></div>
+            </div>
+
+            <!-- Add Food Section -->
+            <div id="adminAddFood" class="admin-section hidden">
+                <form class="add-food-form" onsubmit="addNewFood(event)">
+                    <div class="form-group">
+                        <label for="foodName">খাবারের নাম</label>
+                        <input type="text" id="foodName" placeholder="বিরিয়ানি" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodPrice">মূল্য</label>
+                        <input type="number" id="foodPrice" placeholder="180" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodImage">ছবির URL</label>
+                        <input type="url" id="foodImage" placeholder="https://example.com/biryani.jpg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="foodDescription">বিবরণ (ঐচ্ছিক)</label>
+                        <textarea id="foodDescription" placeholder="খাবারের বিবরণ লিখুন..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>অপশনসমূহ (ঐচ্ছিক)</label>
+                        <div class="options-container" id="optionsContainer">
+                            <!-- Options will be added here dynamically -->
+                        </div>
+                        <button type="button" class="add-option-btn" onclick="addOptionField()">
+                            <i class="fas fa-plus"></i> অপশন যোগ করুন
+                        </button>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-plus"></i> খাবার যোগ করুন
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="order-details-modal">
+        <div class="order-details-card">
+            <div class="order-details-header">
+                <h2>অর্ডার বিস্তারিত</h2>
+                <button onclick="closeOrderDetails()">&times;</button>
+            </div>
+            <div class="order-details-body" id="orderDetailsBody">
+                <!-- Order details will be populated here -->
+            </div>
+            <button class="close-details-btn" onclick="closeOrderDetails()">
+                বন্ধ করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle hidden" id="menuToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script>
+        // Admin Credentials
+        const ADMIN_EMAIL = 'admin@example.com';
+        const ADMIN_PASSWORD = 'admin123';
+
+        // Check if admin is logged in
+        function checkAdminLogin() {
+            return localStorage.getItem('adminLoggedIn') === 'true';
+        }
+
+        // Check and set theme
+        function checkTheme() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('themeIcon').className = 'fas fa-moon';
+            }
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'true');
+                document.getElementById('themeIcon').className = 'fas fa-sun';
+            } else {
+                localStorage.setItem('darkMode', 'false');
+                document.getElementById('themeIcon').className = 'fas fa-moon';
+            }
+        }
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('show');
+        }
+
+        // Check screen size and toggle menu button
+        function checkScreenSize() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('menuToggle').classList.remove('hidden');
+            } else {
+                document.getElementById('menuToggle').classList.add('hidden');
+                document.getElementById('adminSidebar').classList.remove('show');
+            }
+        }
+
+        // Admin Login
+        function adminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if(email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                checkTheme();
+                loadUsers();
+            } else {
+                alert('ভুল লগইন তথ্য! সঠিক ইমেইল ও পাসওয়ার্ড দিন।');
+            }
+        }
+
+        // Admin Logout
+        function adminLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('adminLogin').classList.remove('hidden');
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // Show Admin Section
+        function showAdminSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            document.getElementById(`admin${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`).classList.remove('hidden');
+
+            // Update menu items
+            document.querySelectorAll('.menu-item button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Update active menu item
+            document.querySelector(`.menu-item button[onclick="showAdminSection('${sectionId}')"]`).classList.add('active');
+
+            // Update section title
+            const titleMap = {
+                'users': 'ব্যবহারকারী',
+                'orders': 'অর্ডার',
+                'search': 'অনুসন্ধান',
+                'addFood': 'খাবার যোগ করুন'
+            };
+            document.getElementById('adminSectionTitle').textContent = titleMap[sectionId];
+
+            // Load data if needed
+            if(sectionId === 'users') loadUsers();
+            if(sectionId === 'orders') loadOrders();
+            if(sectionId === 'search') adminSearchFood('');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('adminSidebar').classList.remove('show');
+            }
+        }
+
+        // Load Users
+        function loadUsers() {
+            const usersContainer = document.getElementById('usersContainer');
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+            usersContainer.innerHTML = '';
+
+            if(users.length === 0) {
+                usersContainer.innerHTML = '<tr><td colspan="4" style="text-align: center;">কোন ব্যবহারকারী নেই</td></tr>';
+                return;
+            }
+
+            users.forEach(user => {
+                const userOrders = orders.filter(order => order.userEmail === user.email);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${userOrders.length}</td>
+                `;
+                usersContainer.appendChild(row);
+            });
+        }
+
+        // Load Orders
+        function loadOrders() {
+            const ordersContainer = document.getElementById('ordersContainer');
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+            ordersContainer.innerHTML = '';
+
+            if(orders.length === 0) {
+                ordersContainer.innerHTML = '<tr><td colspan="7" style="text-align: center;">কোন অর্ডার নেই</td></tr>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${order.userName}<br><small>${order.userPhone}</small></td>
+                    <td>${order.foodName}</td>
+                    <td>৳${order.price}</td>
+                    <td>
+                        <span class="status-dot ${order.status === 'pending' ? 'status-pending' : 'status-completed'}"></span>
+                        ${order.status === 'pending' ? 'মুলতুবি' : 'সম্পূর্ণ'}
+                    </td>
+                    <td>
+                        <button class="action-btn complete-btn" onclick="completeOrder('${order.id}')">
+                            <i class="fas fa-check"></i> ${order.status === 'pending' ? 'সম্পূর্ণ' : 'পুনরায়'}
+                        </button>
+                    </td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="viewOrderDetails('${order.id}')">
+                            <i class="fas fa-eye"></i> বিস্তারিত
+                        </button>
+                    </td>
+                `;
+                ordersContainer.appendChild(row);
+            });
+        }
+
+        // Complete Order
+        function completeOrder(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders'));
+            const orderIndex = orders.findIndex(order => order.id == orderId);
+
+            if(orderIndex !== -1) {
+                orders[orderIndex].status = orders[orderIndex].status === 'pending' ? 'completed' : 'pending';
+                localStorage.setItem('orders', JSON.stringify(orders));
+                loadOrders();
+            }
+        }
+
+        // Search Food
+        function adminSearchFood(query) {
+            const adminFoodList = document.getElementById('adminFoodList');
+            const foods = JSON.parse(localStorage.getItem('foods')) || [];
+
+            adminFoodList.innerHTML = '';
+
+            const filteredFoods = query ? 
+                foods.filter(food => food.name.toLowerCase().includes(query.toLowerCase())) : 
+                foods;
+
+            if(filteredFoods.length === 0) {
+                adminFoodList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">কোন খাবার পাওয়া যায়নি</p>';
+                return;
+            }
+
+            filteredFoods.forEach(food => {
+                const foodCard = document.createElement('div');
+                foodCard.className = 'food-card fade-in';
+                foodCard.innerHTML = `
+                    <img src="${food.image}" alt="${food.name}" onerror="this.src='https://via.placeholder.com/300?text=Food+Image'">
+                    <div class="food-card-content">
+                        <h3>${food.name}</h3>
+                        <p>৳${food.price}</p>
+                        ${food.options && food.options.length > 0 ? 
+                            `<p><small>অপশন: ${food.options.join(', ')}</small></p>` : ''}
+                        ${food.description ? `<p><small>${food.description.substring(0, 60)}${food.description.length > 60 ? '...' : ''}</small></p>` : ''}
+                        <div class="food-actions">
+                            <button class="action-btn edit-btn" onclick="editFood('${food.id}')">
+                                <i class="fas fa-edit"></i> সম্পাদনা
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteFood('${food.id}')">
+                                <i class="fas fa-trash"></i> মুছুন
+                            </button>
+                        </div>
+                    </div>
+                `;
+                adminFoodList.appendChild(foodCard);
+            });
+        }
+
+        // Add Option Field
+        function addOptionField(optionName = '') {
+            const optionsContainer = document.getElementById('optionsContainer');
+            const optionId = Date.now();
+            
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-input';
+            optionDiv.innerHTML = `
+                <input type="text" placeholder="অপশন নাম" value="${optionName}" id="option-${optionId}">
+                <span class="remove-option" onclick="removeOption(this.parentElement)">
+                    <i class="fas fa-times"></i>
+                </span>
+            `;
+            
+            optionsContainer.appendChild(optionDiv);
+        }
+
+        // Remove Option
+        function removeOption(optionElement) {
+            optionElement.classList.add('fade-out');
+            setTimeout(() => {
+                optionElement.remove();
+            }, 300);
+        }
+
+        // Add New Food
+        function addNewFood(e) {
+            e.preventDefault();
+            
+            // Collect options
+            const options = [];
+            document.querySelectorAll('.option-input input').forEach(input => {
+                if(input.value.trim() !== '') {
+                    options.push(input.value.trim());
+                }
+            });
+
+            const newFood = {
+                id: Date.now(),
+                name: document.getElementById('foodName').value,
+                price: document.getElementById('foodPrice').value,
+                image: document.getElementById('foodImage').value,
+                description: document.getElementById('foodDescription').value || '',
+                options: options
+            };
+
+            const foods = JSON.parse(localStorage.getItem('foods')) || [];
+            foods.push(newFood);
+            localStorage.setItem('foods', JSON.stringify(foods));
+
+            // Show success notification
+            showNotification('খাবার সফলভাবে যোগ করা হয়েছে!', 'success');
+            
+            // Reset form
+            e.target.reset();
+            document.getElementById('optionsContainer').innerHTML = '';
+            
+            // Reload food list
+            if(document.getElementById('adminSearch').classList.contains('hidden')) {
+                showAdminSection('search');
+            } else {
+                adminSearchFood('');
+            }
+        }
+
+        // Edit Food
+        function editFood(foodId) {
+            const foods = JSON.parse(localStorage.getItem('foods'));
+            const food = foods.find(f => f.id == foodId);
+
+            if(food) {
+                // Fill form with food data
+                document.getElementById('foodName').value = food.name;
+                document.getElementById('foodPrice').value = food.price;
+                document.getElementById('foodImage').value = food.image;
+                document.getElementById('foodDescription').value = food.description || '';
+
+                // Clear and add options
+                const optionsContainer = document.getElementById('optionsContainer');
+                optionsContainer.innerHTML = '';
+                if(food.options && food.options.length > 0) {
+                    food.options.forEach(option => {
+                        addOptionField(option);
+                    });
+                }
+
+                // Change form to edit mode
+                const form = document.querySelector('.add-food-form');
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    
+                    // Update food data
+                    food.name = document.getElementById('foodName').value;
+                    food.price = document.getElementById('foodPrice').value;
+                    food.image = document.getElementById('foodImage').value;
+                    food.description = document.getElementById('foodDescription').value;
+                    
+                    // Update options
+                    food.options = [];
+                    document.querySelectorAll('.option-input input').forEach(input => {
+                        if(input.value.trim() !== '') {
+                            food.options.push(input.value.trim());
+                        }
+                    });
+                    
+                    localStorage.setItem('foods', JSON.stringify(foods));
+                    
+                    // Show success notification
+                    showNotification('খাবার সফলভাবে আপডেট করা হয়েছে!', 'success');
+                    
+                    // Reset form and switch back to add mode
+                    form.reset();
+                    document.getElementById('optionsContainer').innerHTML = '';
+                    form.onsubmit = addNewFood;
+                    
+                    // Reload food list
+                    showAdminSection('search');
+                };
+
+                showAdminSection('addFood');
+            }
+        }
+
+        // Delete Food
+        function deleteFood(foodId) {
+            if(confirm('আপনি কি নিশ্চিত এই খাবারটি মুছতে চান?')) {
+                const foods = JSON.parse(localStorage.getItem('foods'));
+                const updatedFoods = foods.filter(f => f.id != foodId);
+                localStorage.setItem('foods', JSON.stringify(updatedFoods));
+                
+                // Show success notification
+                showNotification('খাবার সফলভাবে মুছে ফেলা হয়েছে!', 'success');
+                
+                adminSearchFood('');
+            }
+        }
+
+        // View Order Details
+        function viewOrderDetails(orderId) {
+            const orders = JSON.parse(localStorage.getItem('orders'));
+            const order = orders.find(o => o.id == orderId);
+            
+            if(order) {
+                const detailsBody = document.getElementById('orderDetailsBody');
+                detailsBody.innerHTML = `
+                    <div class="detail-row">
+                        <span class="detail-label">অর্ডার আইডি:</span>
+                        <span class="detail-value">#${order.id}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ব্যবহারকারী:</span>
+                        <span class="detail-value">${order.userName}<br><small>${order.userPhone}</small></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">ইমেইল:</span>
+                        <span class="detail-value">${order.userEmail}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">খাবারের নাম:</span>
+                        <span class="detail-value">${order.foodName}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">মূল্য:</span>
+                        <span class="detail-value">৳${order.price}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">লেনদেন আইডি:</span>
+                        <span class="detail-value">${order.transactionId || 'N/A'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">বিকাশ নম্বর:</span>
+                        <span class="detail-value">${order.bkashNumber || 'N/A'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">স্ট্যাটাস:</span>
+                        <span class="detail-value">
+                            <span class="status-dot ${order.status === 'pending' ? 'status-pending' : 'status-completed'}"></span>
+                            ${order.status === 'pending' ? 'মুলতুবি' : 'সম্পূর্ণ'}
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">তারিখ:</span>
+                        <span class="detail-value">${order.date}</span>
+                    </div>
+                `;
+                
+                document.getElementById('orderDetailsModal').classList.add('show');
+            }
+        }
+
+        // Close Order Details
+        function closeOrderDetails() {
+            document.getElementById('orderDetailsModal').classList.remove('show');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type} fade-in`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize Admin Panel
+        document.addEventListener('DOMContentLoaded', function() {
+            checkTheme();
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+            
+            if(checkAdminLogin()) {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                loadUsers();
+            }
+        });
+    </script>
+</body>
+</html>
